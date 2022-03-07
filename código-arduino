@@ -1,1 +1,185 @@
+#include <LiquidCrystal.h>
+LiquidCrystal lcd(7,8,9,10,11,12);       // Pines que ultilizaremos
+
+int echopin = 3;
+int trigpin = 13;
+
+int distancia_critica = 4;         //son las distancias a la que dara las instrucciones
+int distancia2_critica = 10;
+int distancia3_critica = 35;
+int retardo_deteccion =900;
+
+
+int banda1 = 7;              // Pines que ultilizaremos
+int rodillo1 = 2;
+int rodillo2 = 4;
+int jabon = 8;
+int agua2 = 11;
+int agua = 5;
+int ventilador = 6;
+char c ;
+
+
+void setup() {
+
+Serial.begin(9600);          //se declaran entradas y salidas
+pinMode (banda1,OUTPUT);
+pinMode (rodillo1,OUTPUT);
+pinMode (rodillo2,OUTPUT);
+pinMode (jabon,OUTPUT);
+pinMode (agua,OUTPUT);
+pinMode (agua2,OUTPUT);
+pinMode (ventilador,OUTPUT);
+
+lcd.begin(16,2);
+Serial.begin(9600);
+pinMode(echopin,INPUT);
+pinMode(trigpin,OUTPUT);
+
+
+}
+
+void loop()   {
+
+c = Serial.read();
+
+digitalWrite(trigpin,LOW);
+delayMicroseconds(2);
+
+digitalWrite(trigpin,HIGH);
+delayMicroseconds(10);
+
+digitalWrite(trigpin,LOW);
+
+
+float distance = pulseIn(echopin,HIGH);
+distance = distance/58;
+
+if (distance < distancia_critica)
+{
+  lcd.setCursor(0, 1);
+  lcd.println ("cuidado");
+  digitalWrite(banda1,LOW);
+  digitalWrite(rodillo2,LOW);
+  digitalWrite(rodillo1,LOW);
+  digitalWrite(jabon,LOW);
+  digitalWrite(agua,LOW);
+  digitalWrite(ventilador,LOW);
+
+  }
+  if(distance > distancia_critica && distance < distancia2_critica)
+  {
+    lcd.setCursor(0, 1);
+    lcd.println ("proxima auto... ");
+
+  }
+
+  if(distance > distancia2_critica && distance < distancia3_critica)
+  {
+    lcd.setCursor(0, 1);
+    lcd.println ("espere porfavor..");
+  }
+
+  delay(retardo_deteccion);
+
+borrar();
+
+
+if(c =='1')
+{
+Serial.println ("empieza el lavado");
+digitalWrite(banda1,HIGH);
+Serial.println ("corriendo");
+delay(1000);
+
+digitalWrite(banda1,LOW);
+Serial.println("PAUSA");
+delay(3000);
+
+digitalWrite(agua,HIGH);
+Serial.println ("Enjuage con agua");
+delay(4000);
+
+digitalWrite(agua,LOW);
+Serial.println ("terminado de enjuage con agua");
+delay(1000);
+
+digitalWrite(jabon,HIGH);
+Serial.println ("lavado con jabon");
+delay(4000);
+
+digitalWrite(jabon,LOW);
+Serial.println ("terminado de lavado con jabon");
+delay(1000);
+
+digitalWrite(rodillo1,HIGH);
+digitalWrite(rodillo2,HIGH);
+Serial.println ("rodillos");
+delay(5000);
+
+digitalWrite(banda1,HIGH);
+Serial.println ("corriendo");
+delay(5500);
+
+digitalWrite(rodillo1,LOW);
+digitalWrite(rodillo2,LOW);
+Serial.println ("termino de rodillos");
+delay(3000);
+
+digitalWrite(banda1,LOW);
+Serial.println("PAUSA");
+delay(3000);
+
+digitalWrite(agua2,HIGH);
+Serial.println ("lavado con agua");
+delay(4000);
+
+digitalWrite(agua2,LOW);
+Serial.println("terminado lavado con agua");
+delay(4000);
+
+digitalWrite(banda1,HIGH);
+Serial.println ("corriendo");
+delay(2100);
+
+digitalWrite(banda1,LOW);
+Serial.println ("PAUSA");
+delay(3000);
+
+digitalWrite(ventilador,HIGH);
+Serial.println("secando");
+delay(4000);
+
+digitalWrite(ventilador,LOW);
+Serial.println("terminado de secado");
+delay(4000);
+
+digitalWrite(banda1,HIGH);
+Serial.println ("corriendo");
+delay(1000);
+
+digitalWrite(banda1,LOW);
+Serial.println ("PAUSA");
+delay(3000);
+Serial.println ("terminado el lavado");
+
+}
+
+if (c =='2')
+{
+  digitalWrite(banda1,LOW);
+  digitalWrite(jabon,LOW);
+  digitalWrite(agua,LOW);
+   digitalWrite(agua2,LOW);
+  Serial.println ("APAGADO");
+
+}
+}
+
+void borrar()
+      {
+         lcd.setCursor(0,1);
+         lcd.println("               ");
+ 
+}
 
