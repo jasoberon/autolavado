@@ -1,0 +1,174 @@
+#include <LiquidCrystal.h>
+LiquidCrystal lcd(7,8,9,10,11,12);       // Pines que ultilizaremos
+
+int banda1 = 13;              // Pines que ultilizaremos
+int rodillo1 = 6;
+int rodillo2 = 5;
+int jabon = 4;
+int agua2 = 2;
+int agua = 3;
+int ventilador = 1;
+int lavado = 0;
+int secuencia = 0;
+int auto1=0;
+int auto2=0;
+int x;
+int y;
+
+void setup() {
+
+Serial.begin(9600);          //se declaran entradas y salidas
+pinMode (banda1,OUTPUT);
+pinMode (rodillo1,OUTPUT);
+pinMode (rodillo2,OUTPUT);
+pinMode (jabon,OUTPUT);
+pinMode (agua,OUTPUT);
+pinMode (agua2,OUTPUT);
+pinMode (ventilador,OUTPUT);
+
+lcd.begin(16,2);
+Serial.begin(9600);
+  
+      lcd.setCursor(0, 1);
+    lcd.println ("LAVA AUTOS");
+  delay(2000);
+ 
+
+}
+
+void loop() {
+  
+x=analogRead(A0);
+y=analogRead(A1);  
+  
+if(x>700)
+{
+ auto1 == 1; 
+}
+  else
+  {
+    auto1 == 0;
+  }
+  
+if(y>700)
+{
+ auto2 == 1; 
+}
+  else
+  {
+    auto2 == 0;
+  }  
+  
+switch(lavado)
+{
+
+  case 0:
+       lcd.setCursor(0, 1);
+    lcd.println ("Aproximar Auto");   
+  if (auto1==1)
+  {
+    secuencia = 1;
+  }
+  
+  if (auto2==1)
+  {
+    secuencia = 2;
+  }
+break;
+  
+  case 1:
+  Serial.println ("empieza el lavado");
+digitalWrite(banda1,HIGH);
+Serial.println ("corriendo");
+delay(1000);
+
+digitalWrite(banda1,LOW);
+Serial.println("PAUSA");
+delay(3000);
+
+digitalWrite(agua,HIGH);
+Serial.println ("Enjuage con agua");
+delay(4000);
+
+digitalWrite(agua,LOW);
+Serial.println ("terminado de enjuage con agua");
+delay(1000);
+
+digitalWrite(jabon,HIGH);
+Serial.println ("lavado con jabon");
+delay(4000);
+
+digitalWrite(jabon,LOW);
+Serial.println ("terminado de lavado con jabon");
+delay(1000);
+
+digitalWrite(rodillo1,HIGH);
+digitalWrite(rodillo2,HIGH);
+Serial.println ("rodillos");
+delay(5000);
+
+digitalWrite(banda1,HIGH);
+Serial.println ("corriendo");
+delay(5500);
+
+digitalWrite(rodillo1,LOW);
+digitalWrite(rodillo2,LOW);
+Serial.println ("termino de rodillos");
+delay(3000);
+
+digitalWrite(banda1,LOW);
+Serial.println("PAUSA");
+delay(3000);
+
+digitalWrite(agua2,HIGH);
+Serial.println ("lavado con agua");
+delay(4000);
+
+digitalWrite(agua2,LOW);
+Serial.println("terminado lavado con agua");
+delay(4000);
+
+digitalWrite(banda1,HIGH);
+Serial.println ("corriendo");
+delay(2100);
+
+digitalWrite(banda1,LOW);
+Serial.println ("PAUSA");
+delay(3000);
+
+digitalWrite(ventilador,HIGH);
+Serial.println("secando");
+delay(4000);
+
+digitalWrite(ventilador,LOW);
+Serial.println("terminado de secado");
+delay(4000);
+
+digitalWrite(banda1,HIGH);
+Serial.println ("corriendo");
+delay(1000);
+
+digitalWrite(banda1,LOW);
+Serial.println ("PAUSA");
+delay(3000);
+Serial.println ("terminado el lavado");
+  
+  secuencia = 0;
+break;
+  
+ case 2:
+  Serial.println ("empieza el lavado2");  
+   digitalWrite(banda1,LOW);
+  digitalWrite(jabon,LOW);
+  digitalWrite(agua,LOW);
+   digitalWrite(agua2,LOW);
+  Serial.println ("APAGADO");
+
+    secuencia = 0;
+  break;
+  
+}
+}
+
+  
+    
